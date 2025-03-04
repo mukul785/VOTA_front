@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .btn-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .input-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group input {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .input-group button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .input-group button:hover {
+            background-color: #1e7e34;
+        }
+
+        /* Large screens (5x2 layout) */
+        @media (min-width: 600px) {
+            .btn-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        /* Small screens (2x5 layout) */
+        @media (max-width: 599px) {
+            .btn-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="btn-grid">
+            <button class="btn" data-command="minimise all">Minimise All</button>
+            <button class="btn" data-command="refresh">Refresh</button>
+            <button class="btn" data-command="open browser">Open Browser</button>
+            <button class="btn" data-command="open file explorer">File Explorer</button>
+            <button class="btn" data-command="take screenshot">Screenshot</button>
+            <button class="btn" data-command="open task manager">Task Manager</button>
+            <button class="btn" data-command="close window">Close Window</button>
+            <button class="btn" data-command="maximize window">Maximize Window</button>
+            <button class="btn" data-command="minimize window">Minimize Window</button>
+            <button class="btn" data-command="switch window">Switch Window</button>
+        </div>
+        <div class="input-group">
+            <input type="text" id="command-input" placeholder="Enter your command">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.btn');
+        const input = document.getElementById('command-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        function sendCommand(command) {
+            fetch('http://localhost:5000/command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ command }),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const command = button.getAttribute('data-command');
+                sendCommand(command);
+            });
+        });
+
+        sendBtn.addEventListener('click', () => {
+            const command = input.value.trim();
+            if (command) {
+                sendCommand(command);
+                input.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
