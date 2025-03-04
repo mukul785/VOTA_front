@@ -113,7 +113,7 @@
         const sendBtn = document.getElementById('send-btn');
 
         function sendCommand(command) {
-            fetch('http://localhost:5000/command', {
+            fetch('http://192.168.84.223:5000/command', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
